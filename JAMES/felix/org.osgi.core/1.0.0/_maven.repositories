@@ -1,0 +1,8 @@
+#NOTE: This is an internal implementation file, its format can be changed without prior notice.
+#Thu Apr 04 00:58:54 IST 2013
+org.osgi.core-1.0.0.jar>adobe=
+org.osgi.core-1.0.0.pom>adobe\ direct=
+org.osgi.core-1.0.0.jar>central=
+org.osgi.core-1.0.0.jar>adobe\ direct=
+org.osgi.core-1.0.0.pom>central=
+org.osgi.core-1.0.0.pom>adobe=

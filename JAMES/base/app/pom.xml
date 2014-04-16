@@ -1,0 +1,252 @@
+<?xml version="1.0"?><!-- Copyright 1997-2010 Day Management AG Barfuesserplatz 
+    6, 4001 Basel, Switzerland All Rights Reserved. This software is the confidential 
+    and proprietary information of Day Management AG, ("Confidential Information"). 
+    You shall not disclose such Confidential Information and shall use it only 
+    in accordance with the terms of the license agreement you entered into with 
+    Day. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ====================================================================== -->
+    <!-- P A R E N T P R O J E C T D E S C R I P T I O N -->
+    <!-- ====================================================================== -->
+    <parent>
+        <groupId>com.techm.cq5.referenceApp</groupId>
+        <artifactId>reference</artifactId>        
+        <version>1.0.0-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+    </parent>
+
+    <!-- ====================================================================== -->
+    <!-- P R O J E C T D E S C R I P T I O N -->
+    <!-- ====================================================================== -->
+    <artifactId>reference-app</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Reference Application</name>
+    <description>This Package contains the CQ Application Code, NO Content.</description>
+
+    <properties>
+        <content.dir>${project.build.directory}/classes/jcr_root</content.dir><!-- Target directory under the apps folder -->
+        <package.version>${project.version}</package.version>        
+    </properties>
+
+    <!-- ====================================================================== -->
+    <!-- B U I L D D E F I N I T I O N -->
+    <!-- ====================================================================== -->
+    <build>
+        <resources>
+            <!-- filter meta information to get some properties into the 
+                files -->
+            <resource>
+                <directory>${basedir}/META-INF</directory><!-- This is the direct project directory -->
+                <targetPath>META-INF</targetPath>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${basedir}/META-INF</directory>
+                <targetPath>META-INF</targetPath>
+                <excludes>
+                    <exclude>**/*.xml</exclude>
+                </excludes>
+            </resource>
+            <!-- exclude .vlt control files and tests -->
+            <resource>
+                <directory>${basedir}/jcr_root</directory>
+                <targetPath>jcr_root</targetPath>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>**/.vlt</exclude>
+                    <exclude>**/.vltignore</exclude>
+                    <exclude>**/*.iml</exclude>
+                    <exclude>**/.classpath</exclude>
+                    <exclude>**/.project</exclude>
+                    <exclude>**/.DS_Store</exclude>
+                    <exclude>**/target/**</exclude>
+                  
+                 </excludes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>            
+
+            <!-- Check XML Files -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>xml-maven-plugin</artifactId>
+				<version>1.0</version>
+            </plugin>
+
+            <!-- copy the dependant bundles -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-bundles</id>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.techm.cq5.referenceApp</groupId>
+                                    <artifactId>reference-core</artifactId>
+                                    <outputDirectory>${content.dir}/apps/testApp/install</outputDirectory><!-- content.dir is the jcr-root directory -->
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+             <plugin>
+                    <!-- Vault package deploy -->
+                    <groupId>com.day.jcr.vault</groupId>
+                    <artifactId>content-package-maven-plugin</artifactId>
+                    <version>0.0.18</version>
+                    <!-- custom version that brakes
+              the build if the upload fails -->
+                    <extensions>true</extensions>
+                    <executions>
+                        <execution>
+                            <id>vault-install</id>
+                            <phase>install</phase>
+                            <goals>
+                                <goal>install</goal>
+                            </goals>
+                            <configuration>
+                                <userId>admin</userId>
+                                <password>admin</password>
+                                <targetURL>http://localhost:4502/crx/packmgr/service.jsp</targetURL>
+								<useProxy>false</useProxy>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            <plugin>
+                <groupId>org.apache.sling</groupId>
+                <artifactId>maven-jspc-plugin</artifactId>
+				<version>2.0.6</version>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- ====================================================================== -->
+    <!-- D E P E N D E N C I E S -->
+    <!-- ====================================================================== -->
+    <dependencies>
+		<dependency>
+		  <groupId>junit</groupId>
+		  <artifactId>junit</artifactId>
+		  <version>3.8.1</version>
+		  <scope>compile</scope>
+		</dependency>
+        <dependency>
+            <groupId>com.techm.cq5.referenceApp</groupId>
+            <artifactId>reference-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+             <!-- <systemPath>G:/repository/com/techm/cq5/referenceApp/reference-core/0.0.1-SNAPSHOT/reference-core-0.0.1-SNAPSHOT.jar</systemPath> -->
+             <!-- <scope>system</scope> -->
+        </dependency>
+        <dependency>
+            <groupId>com.day.cq</groupId>
+            <artifactId>cq-tagging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.day.cq</groupId>
+            <artifactId>cq-personalization</artifactId>
+        </dependency>
+        <!-- <dependency> <groupId>com.day.cq</groupId> <artifactId>cq-i18n</artifactId> 
+            </dependency> -->
+        <dependency>
+            <groupId>com.adobe.granite</groupId>
+            <artifactId>com.adobe.granite.i18n</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.adobe.granite</groupId>
+            <artifactId>com.adobe.granite.xssprotection</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.scripting.jsp.taglib</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.atom.taglib</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.scripting.jsp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.day.commons</groupId>
+            <artifactId>day-commons-jstl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.day.commons</groupId>
+            <artifactId>day-commons-gfx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.jcr</groupId>
+            <artifactId>jcr</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.engine</artifactId>
+        </dependency> 
+         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jsp-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency> 
+                    <dependency>
+                <groupId>com.day.cq.wcm</groupId>
+                <artifactId>cq-wcm-api</artifactId>
+                <version>5.5.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.day.cq.wcm</groupId>
+                <artifactId>cq-wcm-commons</artifactId>
+                <version>5.5.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.day.cq.wcm</groupId>
+                <artifactId>cq-wcm-foundation</artifactId>
+                <version>5.5.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.day.cq.wcm</groupId>
+                <artifactId>cq-wcm-taglib</artifactId>
+                <version>5.5.0</version>
+            </dependency>
+              
+    </dependencies>
+
+</project>

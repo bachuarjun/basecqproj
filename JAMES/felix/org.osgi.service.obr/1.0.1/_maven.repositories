@@ -1,0 +1,8 @@
+#NOTE: This is an internal implementation file, its format can be changed without prior notice.
+#Thu Apr 04 00:58:54 IST 2013
+org.osgi.service.obr-1.0.1.jar>adobe=
+org.osgi.service.obr-1.0.1.pom>adobe=
+org.osgi.service.obr-1.0.1.pom>adobe\ direct=
+org.osgi.service.obr-1.0.1.jar>adobe\ direct=
+org.osgi.service.obr-1.0.1.jar>central=
+org.osgi.service.obr-1.0.1.pom>central=
